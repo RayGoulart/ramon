@@ -1,64 +1,90 @@
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-const { v4: uuidv4 } = require('uuid')
-const fs = require('fs')
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-const db = require('./db.json')
-const { error } = require('console')
+const dbPath = './db.json';
 
-//listar todos os produtos
-app.get('/produtos', function (req,res) {
-    var produtos = db.produtos
-    res.json(produtos)
-})
+// Função para ler a base de dados
+function readDB() {
+    return JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
+}
 
-//listar produto especifico
-app.get('/produtos/:id', function (req, res){
-    const _id = req.params.id
-    const lista_produtos = db.produtos
-    const produto = lista_produtos.find(
-        (produto) => produto.id == _id
-        )
-    produto ? res.send(produto) : res.status(404).send({error:'not found'})
+// Listar todos os produtos
+app.get('/produtos', function (req, res) {
+    const produtos = readDB().produtos;
+    res.json(produtos);
+});
 
-})
+// Listar um produto específico
+app.get('/produtos/:id', function (req, res) {
+    const _id = req.params.id;
+    const lista_produtos = readDB().produtos;
+    const produto = lista_produtos.find((produto) => produto.id === _id);
+    produto ? res.json(produto) : res.status(404).send({ error: 'Not found' });
+});
 
-//criar produto
-app.post('/produtos', function (req,res){
-    const dados = req.body
-    if(!dados.nome || !dados.preco) {
-        res.status(406).send({error:'Nome e preço deve ser informado'})
+// Criar um novo produto
+app.post('/produtos', function (req, res) {
+    const dados = req.body;
+    if (!dados.nome || !dados.preco) {
+        return res.status(406).send({ error: 'Nome e preço devem ser informados' });
     }
-    const _id = uuidv4()
-    dados.id = _id
-    
-    lista_produtos = db.produtos
-    lista_produtos.push(dados)
-    console.log(lista_produtos)
-    fs.writeFile('./db.json', JSON.stringify(lista_produtos), (err) => {
-        if (err){
-            res.status(500).send({error:'erro no servidor'})
+    const _id = uuidv4();
+    dados.id = _id;
+
+    const db = readDB();
+    db.produtos.push(dados);
+    fs.writeFile(dbPath, JSON.stringify(db), (err) => {
+        if (err) {
+            return res.status(500).send({ error: 'Erro no servidor' });
         }
-    })
+        res.json(dados);
+    });
+});
 
-    res.json(dados)
-})
+// Atualizar um produto específico
+app.put('/produtos/:id', function (req, res) {
+    const _id = req.params.id;
+    const novosDados = req.body;
+    const db = readDB();
+    const produtoIndex = db.produtos.findIndex((produto) => produto.id === _id);
 
+    if (produtoIndex === -1) {
+        return res.status(404).send({ error: 'Produto não encontrado' });
+    }
 
-//rota para atualizar um produto especifico
-app.post
+    db.produtos[produtoIndex] = { ...db.produtos[produtoIndex], ...novosDados };
+    fs.writeFile(dbPath, JSON.stringify(db), (err) => {
+        if (err) {
+            return res.status(500).send({ error: 'Erro no servidor' });
+        }
+        res.json(db.produtos[produtoIndex]);
+    });
+});
 
-//deletar um produto especifico
-app.delete
+// Deletar um produto específico
+app.delete('/produtos/:id', function (req, res) {
+    const _id = req.params.id;
+    const db = readDB();
+    const produtoIndex = db.produtos.findIndex((produto) => produto.id === _id);
 
+    if (produtoIndex === -1) {
+        return res.status(404).send({ error: 'Produto não encontrado' });
+    }
 
+    db.produtos.splice(produtoIndex, 1);
+    fs.writeFile(dbPath, JSON.stringify(db), (err) => {
+        if (err) {
+            return res.status(500).send({ error: 'Erro no servidor' });
+        }
+        res.status(204).send(); // No content
+    });
+});
 
-
-
-
-
-app.listen(8000)
-
+app.listen(8000, () => {
+    console.log('Servidor rodando na porta 8000');
+});
