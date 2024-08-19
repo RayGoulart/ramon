@@ -1,22 +1,10 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const fs = require('fs').promises;
+const rotas = require('./rotas');
 
 app.use(bodyParser.json());
-
-const dbPath = './db.json';
-
-// Função para ler a base de dados
-async function readDB() {
-    try {
-        const data = await fs.readFile(dbPath, 'utf-8');
-        return JSON.parse(data);
-    } catch (err) {
-        throw new Error('Erro ao ler a base de dados');
-    }
-}
-
+app.use('/produtos', rotas); // Alterado para prefixar as rotas com '/produtos'
 
 // Iniciar o servidor
 const port = 8000; // Ajuste a porta conforme necessário
