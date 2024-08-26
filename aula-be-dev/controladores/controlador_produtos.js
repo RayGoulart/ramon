@@ -1,4 +1,4 @@
-const db = require('./db.json');
+const db = require('../db.json');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 
@@ -73,3 +73,4 @@ const deleteProduto = async (req, res) => {
 };
 
 module.exports = { listProdutos, getProduto, createProduto, updateProduto, deleteProduto };
+
