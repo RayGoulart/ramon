@@ -11,9 +11,9 @@ app.use('/clientes', rotascliente)
 
 
 // Iniciar o servidor
-const port = 8000; // Ajuste a porta conforme necessário
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+// const port = 8000; // Ajuste a porta conforme necessário
+// app.listen(port, () => {
+//     console.log(`Servidor rodando na porta ${port}`);
+// });
 
 module.exports = app;
