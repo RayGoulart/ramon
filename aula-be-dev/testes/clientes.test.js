@@ -1,12 +1,12 @@
 const request = require('supertest');
-const app = require('../index'); // Certifique-se de que o caminho está correto
+const app = require('../index'); 
 
 describe('Clientes API', () => {
 
-    let clienteId; // Variável para armazenar o ID do cliente criado
+    let clienteId; 
 
     beforeAll(async () => {
-        // Crie um cliente para os testes
+       
         const res = await request(app).post('/clientes').send({
             nome: "Cliente Teste",
             email: "cliente@example.com",
@@ -35,11 +35,11 @@ describe('Clientes API', () => {
         it('deve retornar 404 para um cliente não encontrado', async () => {
             const res = await request(app).get('/clientes/999').send();
             expect(res.status).toBe(404);
-            expect(res.body.error).toBe('not found'); // Ajustado para "not found"
+            expect(res.body.error).toBe('not found'); 
         });
     });
 
-
+    //testar se esta atualizando cliente
     describe('PUT /clientes/:id', () => {
         describe('Atualizar um cliente existente', () => {
             it('deve atualizar um cliente existente com sucesso', async () => {
@@ -55,6 +55,24 @@ describe('Clientes API', () => {
 
     });
 
+    //testar se esta criando um cliente
+    describe('POST /clientes', () => {
+        it('deve criar um novo cliente com sucesso', async () => {
+            const res = await request(app).post('/clientes').send({
+                nome: "Cliente Teste",
+                email: "cliente@example.com",
+                senha: "senha"
+            });
+            expect(res.status).toBe(201); // Assumindo que a criação deve retornar um status 201 Created
+            expect(res.body).toHaveProperty('id'); // Verifica se o ID do cliente foi retornado
+            expect(res.body).toHaveProperty('nome', 'Cliente Teste');
+            expect(res.body).toHaveProperty('email', 'cliente@example.com');
+            clienteId = res.body.id; // Armazena o ID do cliente criado para usar nos outros testes
+        });
+    });
+
+    
+    //testar se esta deletando um cliente
     describe('DELETE /clientes/:id', () => {
         describe('Deletar um cliente existente', () => {
             it('deve deletar um cliente existente com sucesso', async () => {
