@@ -66,6 +66,12 @@
                 "cep": "01234-567"
             },
             "id": "b4ff8f8a-435a-433e-85df-5e2a56fb272d"
+        },
+        {
+            "nome": "rayssa",
+            "email": "rayssa@example.com",
+            "senha": "$2a$10$1mEJTIyFpjJadUkY45lwuelzSW21VT3/bIi26Tm4H4QN73NPKlSd6", 
+            "id": "30cbfbd1-afdf-43f8-b8b5-ac1acde496f5"
         }
     ],
     "pedidos": [

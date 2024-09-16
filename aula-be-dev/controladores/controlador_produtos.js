@@ -4,6 +4,7 @@ const fs = require('fs');
 
 //listar todos os produtos
 const listProdutos = async (req, res) => {
+    console.log(req.cookies)
     const produtos = db.produtos;
     res.json(produtos);
 };
