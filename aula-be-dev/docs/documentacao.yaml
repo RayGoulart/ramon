@@ -1,0 +1,293 @@
+openapi: 3.0.3
+info:
+  title: API de Produtos e Clientes
+  version: 1.0.0
+  description: Esta api foi criada para validar os conhecimentos relacionados a backend, na disciplina de Codificação para Backend. Foram criados uma CRUD para uma tabela de clientes, outra CRUD para uma tabela de produtos, rotas para autenticação dos clientes, validação de cookies INT, entre outras bibliotecas como bcrypt para criptografia de senha, jest e / supe*test para testes automatizados, dotenv para salvar variaveis de ambiente e etc.
+
+tags:
+  - name: Produtos
+    description: Operações relacionadas aos produtos
+  - name: Clientes
+    description: Operações relacionadas aos clientes
+  - name: autenticação
+    description: Operações relacionadas ao login dos clientes
+
+paths:
+  # ===================================
+  # Rotas de Produtos
+  # ===================================
+  /produtos:
+    get:
+      summary: Listar todos os produtos
+      description: Essa rota tem como função listar todos os produtos disponíveis.
+      tags:
+        - Produtos
+      responses:
+        '200':
+          description: sucesso
+    
+        
+
+
+    post:
+      summary: Criar um novo produto
+      description: Adiciona um novo produto à lista.
+      parameters:
+        - in: body
+          name: produto
+          required: true
+          description: Objeto do produto a ser criado.
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+                description: Nome do produto.
+              preco:
+                type: number
+                description: Preço do produto.
+      tags:
+        - Produtos
+      responses:
+        '406':
+          description: Nome e preço devem ser informados.
+        '500':
+          description: Erro interno do servidor.
+        '201':
+          description: Criado - Produto criado com sucesso.
+      
+           
+  /produtos/{id}:
+    get:
+      summary: Obter um produto específico
+      description: Retorna os detalhes de um produto pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do produto a ser obtido.
+          schema:
+            type: string
+      tags:
+        - Produtos
+      responses:
+        '404':
+          description: Não encontrado - Produto não existe.
+
+    put:
+      summary: Atualizar um produto existente
+      description: Altera os dados de um produto pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do produto a ser atualizado.
+          schema:
+            type: string
+        - in: body
+          name: produto
+          required: true
+          description: Objeto do produto a ser atualizado.
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+                description: Nome do produto.
+              preco:
+                type: number
+                description: Preço do produto.
+      tags:
+        - Produtos
+      responses:
+        '404':
+          description: Não encontrado - Produto não existe.
+        '500':
+          description: Erro interno do servidor.
+      
+
+    delete:
+      summary: Remover um produto existente
+      description: Deleta um produto pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do produto a ser deletado.
+          schema:
+            type: string
+      tags:
+        - Produtos
+      responses:
+        '404':
+          description: Não encontrado - Produto não existe.
+        '500':
+          description: Erro interno do servidor.
+        '204':
+          description: Sem conteúdo - Produto removido com sucesso.
+
+  # ===================================
+  # Rotas de Clientes
+  # ===================================
+  /clientes:
+    get:
+      summary: Listar todos os clientes
+      description: Essa rota tem como função listar todos os clientes disponíveis.
+      responses:
+        '200':
+          description: Sucesso
+        '401':
+          description: Falha de autenticação
+
+      tags:
+        - Clientes
+
+    post:
+      summary: Criar um novo cliente
+      description: Adiciona um novo cliente à lista.
+      parameters:
+        - in: body
+          name: cliente
+          required: true
+          description: Objeto do cliente a ser criado.
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+                description: nome do cliente.
+              email:
+                type: number
+                description: email do cliente.
+              senha:
+                type: number
+                description: senha do cliente.
+      tags:
+        - Clientes
+      responses:
+        '406':
+          description: email e senha devem ser informados.
+        '500':
+          description: Erro interno do servidor.
+        '201':
+          description: Criado - cliente criado com sucesso.
+      
+
+  /clientes/{id}:
+    get:
+      summary: Obter um cliente específico
+      description: Retorna os detalhes de um cliente pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do cliente a ser obtido.
+          schema:
+            type: string
+      tags:
+        - Clientes
+      responses:
+        '404':
+          description: Não encontrado - cliente não existe.
+
+
+    put:
+      summary: Atualizar um cliente existente
+      description: Altera os dados de um cliente pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do cliente a ser atualizado.
+          schema:
+            type: string
+        - in: body
+          name: cliente
+          required: true
+          description: Objeto do cliente a ser atualizado.
+          schema:
+            type: object
+            properties:
+              nome:
+                type: string
+                description: Nome do cliente.
+              email:
+                type: string
+                description: email do cliente.
+              senha:
+                type: string
+                description: senha do cliente.
+      tags:
+        - Clientes
+      responses:
+        '404':
+          description: Não encontrado - cliente não existe.
+        '500':
+          description: Erro interno do servidor.
+
+    delete:
+      summary: Remover um cliente existente
+      description: Deleta um cliente pelo seu ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID do cliente a ser deletado.
+          schema:
+            type: string
+      tags:
+        - Clientes
+      responses:
+        '404':
+          description: Não encontrado - cliente não existe.
+        '500':
+          description: Erro interno do servidor.
+        '204':
+          description: Sem conteúdo - cliente removido com sucesso.
+
+
+# ===================================
+# Rotas de Autenticação
+# ===================================
+  /auth/login:
+    post:
+      summary: Fazer login de um cliente
+      description: Autentica um cliente e retorna um token JWT.
+      parameters:
+        - in: query
+          name: email
+          required: true
+          description: Email do cliente.
+          schema:
+            type: string
+        - in: query
+          name: senha
+          required: true
+          description: Senha do cliente.
+          schema:
+            type: string
+      tags:
+        - autenticação
+      responses:
+        '200':
+          description: Sucesso - Cliente autenticado e token retornado.
+        '404':
+          description: Não encontrado - Cliente não existe.
+        '406':
+          description: Email ou senha não enviados.
+        '401':
+          description: A senha não é válida.
+        '500':
+          description: Erro interno do servidor.
+
+  /auth/logout:
+    post:
+      summary: Fazer logout de um cliente
+      description: Remove o token de autenticação do cliente.
+      tags:
+        - autenticação
+      responses:
+        '200':
+          description: Sucesso - Usuário fez logout com sucesso.
+        '500':
+          description: Erro interno do servidor.

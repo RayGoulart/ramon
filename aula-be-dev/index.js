@@ -7,11 +7,18 @@ const rotascliente = require('./rotas/rotas-clientes')
 const rotas_autenticacao = require('./rotas/rotas-autenticacao') //importando
 const cookieParser = require('cookie-parser')
 
+const swaggerUi = require("swagger-ui-express")
+const YAML = require('yamljs')
+const swaggerDocument = YAML.load('./docs/documentacao.yaml')
+
 app.use(bodyParser.json());
 app.use(cookieParser())
+
 app.use('/produtos', rotasprodutos); // Alterado para prefixar as rotas com '/produtos'
 app.use('/clientes', rotascliente)
 app.use('/auth', rotas_autenticacao)
+
+app.use('/api-docs',swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 
 //Iniciar o servidor
